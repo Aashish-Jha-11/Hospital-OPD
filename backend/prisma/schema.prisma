@@ -1,0 +1,159 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  PATIENT
+  DOCTOR
+  ADMIN
+}
+
+enum AppointmentStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+model User {
+  id        Int     @id @default(autoincrement())
+  email     String  @unique
+  password  String
+  role      UserRole
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  patient   Patient?
+  doctor    Doctor?
+  admin     Admin?
+}
+
+model Patient {
+  id                Int     @id @default(autoincrement())
+  userId            Int     @unique
+  name              String
+  phone             String
+  dateOfBirth       DateTime
+  medicalHistory    Json?   // Store medical conditions, allergies, etc.
+  emergencyContact  String
+  profilePhoto      String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  appointments      Appointment[]
+  prescriptions     Prescription[]
+  labRequests       LabRequest[]
+  bills             Bill[]
+}
+
+model Doctor {
+  id                Int     @id @default(autoincrement())
+  userId            Int     @unique
+  name              String
+  specialization    String
+  qualification     String
+  experience        Int
+  consultationFee   Float
+  profilePhoto      String?
+  rating            Float   @default(5.0)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  appointments      Appointment[]
+  prescriptions     Prescription[]
+  labRequests       LabRequest[]
+  slots             Slot[]
+}
+
+model Admin {
+  id        Int     @id @default(autoincrement())
+  userId    Int     @unique
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Slot {
+  id          Int     @id @default(autoincrement())
+  doctorId    Int
+  date        DateTime
+  startTime   String
+  endTime     String
+  isAvailable Boolean @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  doctor      Doctor  @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  appointments Appointment[]
+}
+
+model Appointment {
+  id          Int     @id @default(autoincrement())
+  patientId   Int
+  doctorId    Int
+  slotId      Int
+  status      AppointmentStatus @default(SCHEDULED)
+  symptoms    String?
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  patient     Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  doctor      Doctor  @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  slot        Slot    @relation(fields: [slotId], references: [id], onDelete: Cascade)
+  prescription Prescription?
+}
+
+model Prescription {
+  id            Int     @id @default(autoincrement())
+  patientId     Int
+  doctorId      Int
+  appointmentId Int?    @unique
+  medications   Json    // Array of {name, dosage, frequency, duration}
+  instructions  String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  patient       Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  doctor        Doctor  @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  appointment   Appointment? @relation(fields: [appointmentId], references: [id], onDelete: SetNull)
+}
+
+model LabRequest {
+  id        Int     @id @default(autoincrement())
+  patientId Int
+  doctorId  Int
+  tests     Json    // Array of test objects
+  status    String  @default("PENDING")
+  results   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  patient   Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  doctor    Doctor  @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+}
+
+model Bill {
+  id            Int     @id @default(autoincrement())
+  patientId     Int
+  items         Json    // Array of billing items
+  totalAmount   Float
+  status        String  @default("PENDING")
+  paymentDate   DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  patient       Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+}

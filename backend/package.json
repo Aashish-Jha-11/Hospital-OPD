@@ -1,0 +1,22 @@
+{
+  "name": "hospital-opd-backend",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "@prisma/client": "latest",
+    "bcryptjs": "latest",
+    "cors": "latest",
+    "dotenv": "latest",
+    "express": "latest",
+    "jsonwebtoken": "latest",
+    "prisma": "latest",
+    "socket.io": "latest"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

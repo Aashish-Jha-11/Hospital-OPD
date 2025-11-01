@@ -167,7 +167,7 @@ Docker (optional but recommended)
 
 1.⁠ ⁠*Clone the repository*
 ⁠ bash
-git clone https://github.com/Aashish-Jha-11/Hospital-OPD-.git
+git clone https://github.com/Aashish-Jha-11/Hospital-OPD.git
 cd Hospital-OPD-
  ⁠
 
@@ -522,8 +522,8 @@ GitHub: [@Harikrushn9118](https://github.com/Harikrushn9118)
 
 Having issues? Found a bug? Have suggestions?
 
-•⁠  ⁠🐛 [Open an issue](https://github.com/Aashish-Jha-11/Hospital-OPD-/issues)
-•⁠  ⁠💬 [Start a discussion](https://github.com/Aashish-Jha-11/Hospital-OPD-/discussions)
+•⁠  ⁠🐛 [Open an issue](https://github.com/Aashish-Jha-11/Hospital-OPD/issues)
+•⁠  ⁠💬 [Start a discussion](https://github.com/Aashish-Jha-11/Hospital-OPD/discussions)
 •⁠  ⁠📧 Email: [your-email@example.com](mailto:your-email@example.com)
 
 ---

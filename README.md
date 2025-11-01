@@ -212,7 +212,7 @@ docker-compose up
 
 # Or manually
 # Terminal 1 - Backend
-cd backend && npm run dev
+cd backend && nodemon server.js
 
 # Terminal 2 - Frontend
 cd frontend && npm run dev
